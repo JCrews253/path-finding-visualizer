@@ -150,7 +150,19 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
       ne[animations[i].index].className += animations[i].className+"Instant"
     }
   }
+  const EstablishServerConnection = async() => {
+    const response = await fetch(`https://path-finding-visualizer.herokuapp.com/status`,{
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers':'*'
+      }})
+    serverStatus.current = true
+  }
 
+  const serverStatus = useRef(false)
   const[grid,setGrid] = useState( () => GetBlankGrid(0))
   const[startNode,setStartNode] = useState((rows*columns-1)-Math.floor(columns/2))
   const[finishNode,setFinishNode] = useState(Math.floor(columns/2))
@@ -169,6 +181,8 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
 
   grid[startNode] = false
   grid[finishNode] = false
+
+  if(serverStatus.current === false) EstablishServerConnection()
 
   useEffect( () => {
     if(tiltState){
