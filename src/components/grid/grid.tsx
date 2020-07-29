@@ -74,6 +74,14 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
         setStartNode(index)
       }
       else if(finishMoveStatus.current){
+        const newGrid = [...grid]
+        newGrid[prevFinish.current.index] = prevFinish.current.wasWall
+        newGrid[index] = false
+        setGrid(newGrid)
+        prevFinish.current = {
+          index: index,
+          wasWall: grid[index]
+        }
         setFinishNode(index)
       }
       else if(mouseStatus.current && index !== mouseIndex.current){
@@ -107,7 +115,7 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
   const StartSearch = async () => {
     startSearch(true)
     CleanGrid()
-    
+    grid[finishNode] = false
     const request = {
       algorithm: algorithm,
       grid: grid,
@@ -163,11 +171,13 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
     console.log('server connection')
   }
 
+  
   const serverStatus = useRef(false)
   const[grid,setGrid] = useState( () => GetBlankGrid(0))
   const[startNode,setStartNode] = useState((rows*columns-1)-Math.floor(columns/2))
   const[finishNode,setFinishNode] = useState(Math.floor(columns/2))
   const[nodeDimensions,setNodeDimensions] = useState(50)
+  const prevFinish = useRef({index: finishNode, wasWall: false})
 
   const mouseStatus = useRef(false)
   const startMoveStatus = useRef(false)
@@ -180,8 +190,8 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
   const speed = useSelector((state:RootStore) => state.searchSpeed)
   const boardChange = useSelector((state:RootStore) => state.boardChange)
 
-  grid[startNode] = false
-  grid[finishNode] = false
+  //grid[startNode] = false
+  //grid[finishNode] = false
 
   if(serverStatus.current === false) EstablishServerConnection()
 
