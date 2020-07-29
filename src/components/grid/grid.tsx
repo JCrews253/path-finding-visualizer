@@ -160,6 +160,7 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
         'Access-Control-Allow-Headers':'*'
       }})
     serverStatus.current = true
+    console.log('server connection')
   }
 
   const serverStatus = useRef(false)
