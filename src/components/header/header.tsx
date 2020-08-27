@@ -43,6 +43,10 @@ const Header: React.FC<IHeaderInputProps> = ({changeAlgo, startSearch, gridTilt,
         window.open("https://github.com/JCrews253/path-finding-visualizer")
     }
 
+    const HandleHomeClick = () => {
+        window.open("https://jcrews253.github.io/portfolio/#/projects",'_self')
+    }
+
     const solving = useSelector((state: RootStore) => state.startSearch)
 
     return(
@@ -59,7 +63,7 @@ const Header: React.FC<IHeaderInputProps> = ({changeAlgo, startSearch, gridTilt,
                 </select>
             </div>
             <div className='buttons-container'>
-                <button className='animated-button'>Home</button>
+                <button className='animated-button' onClick={()=> HandleHomeClick()}>Home</button>
                 <button className='animated-button' onClick={()=> HandleGitHubClick()}>Github</button>
                 <hr/>
                 <button className='animated-button' onClick={() => onStartSearch()}>Start</button>
