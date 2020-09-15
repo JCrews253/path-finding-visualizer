@@ -1,4 +1,4 @@
-import {EuclideanDistance, FindSmallestCost, Node, ListContains, ListRemove, CalcNodeCosts, ManhattanDistance} from './index'
+import {FindSmallestCost, Node, ListContains, ListRemove, CalcNodeCosts, ManhattanDistance} from './index'
 
 const getBlankNodeGrid = (size:number):Node[] => {
     const array: Node[] = []
@@ -15,11 +15,11 @@ const getBlankNodeGrid = (size:number):Node[] => {
     return array
 }
 
-const updateWeights = (array:Node[],index:number, start:number, finish:number, width:number, parent: number, allowDiagonals:boolean) => {
+const updateWeights = (array:Node[],index:number, start:number, finish:number, width:number, parent: number) => {
     array[index] = {
         ...array[index],
-        gWeight: array[parent].gWeight + (allowDiagonals ? EuclideanDistance(index,parent,width) : ManhattanDistance(index,parent,width)),
-        hWeight: allowDiagonals ? EuclideanDistance(index,finish,width) : ManhattanDistance(index,finish,width),
+        gWeight: array[parent].gWeight + ManhattanDistance(index,parent,width),
+        hWeight: ManhattanDistance(index,finish,width),
         get fWeight(){
             return this.gWeight + this.hWeight
         },
@@ -28,12 +28,12 @@ const updateWeights = (array:Node[],index:number, start:number, finish:number, w
 }
 
 test('calcDistance-checkStraight', () => {
-    const output = EuclideanDistance(0,4,5)
+    const output = ManhattanDistance(0,4,5)
     expect(output).toBe(40)
 })
 
 test('calcDistance-checkDiagonal' , () => {
-    const output = EuclideanDistance(0,24,5)
+    const output = ManhattanDistance(0,24,5)
     expect(output).toBe(56)
 })
 
@@ -122,28 +122,11 @@ test('calcNodeCosts-checkNonDiagonals-emptyClosed', () => {
     const output = [...input]
     const closedNodes: Node[] = []
     const openNodes: Node[] = getBlankNodeGrid(Math.pow(5,2))
-    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5, false)
-    updateWeights(output,7,0,24,5,12,false)
-    updateWeights(output,13,0,24,5,12,false)
-    updateWeights(output,17,0,24,5,12,false)
-    updateWeights(output,11,0,24,5,12,false)
-    expect(input).toStrictEqual(output)
-})
-
-test('calcNodeCosts-checkDiagonals-emptyClosed', () => {
-    const input:Node[] = getBlankNodeGrid(Math.pow(5,2))
-    const output = [...input]
-    const closedNodes: Node[] = []
-    const openNodes: Node[] = getBlankNodeGrid(Math.pow(5,2))
-    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5, true)
-    updateWeights(output,7,0,24,5,12,true)
-    updateWeights(output,8,0,24,5,12,true)
-    updateWeights(output,13,0,24,5,12,true)
-    updateWeights(output,18,0,24,5,12,true)
-    updateWeights(output,17,0,24,5,12,true)
-    updateWeights(output,16,0,24,5,12,true)
-    updateWeights(output,11,0,24,5,12,true)
-    updateWeights(output,6,0,24,5,12,true)
+    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5)
+    updateWeights(output,7,0,24,5,12)
+    updateWeights(output,13,0,24,5,12)
+    updateWeights(output,17,0,24,5,12)
+    updateWeights(output,11,0,24,5,12)
     expect(input).toStrictEqual(output)
 })
 
@@ -156,10 +139,10 @@ test('calcNodeCosts-checkNonDiagonals-TopClosed', () => {
         index:7
     }
     const openNodes: Node[] = getBlankNodeGrid(Math.pow(5,2))
-    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5, false)
-    updateWeights(output,13,0,24,5,12,false)
-    updateWeights(output,17,0,24,5,12,false)
-    updateWeights(output,11,0,24,5,12,false)
+    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5)
+    updateWeights(output,13,0,24,5,12)
+    updateWeights(output,17,0,24,5,12)
+    updateWeights(output,11,0,24,5,12)
     expect(input).toStrictEqual(output)
 })
 
@@ -172,11 +155,11 @@ test('calcNodeCosts-checkNonDiagonals-RightClosed', () => {
         index:13
     }
     const openNodes: Node[] = getBlankNodeGrid(Math.pow(5,2))
-    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5, false)
-    updateWeights(output,7,0,24,5,12,false)
+    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5)
+    updateWeights(output,7,0,24,5,12)
     //updateWeights(output,13,0,24,5,12,false)
-    updateWeights(output,17,0,24,5,12,false)
-    updateWeights(output,11,0,24,5,12,false)
+    updateWeights(output,17,0,24,5,12)
+    updateWeights(output,11,0,24,5,12)
     expect(input).toStrictEqual(output)
 })
 
@@ -189,11 +172,11 @@ test('calcNodeCosts-checkNonDiagonals-BottomClosed', () => {
         index:17
     }
     const openNodes: Node[] = getBlankNodeGrid(Math.pow(5,2))
-    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5, false)
-    updateWeights(output,7,0,24,5,12,false)
-    updateWeights(output,13,0,24,5,12,false)
+    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5)
+    updateWeights(output,7,0,24,5,12)
+    updateWeights(output,13,0,24,5,12)
     //updateWeights(output,17,0,24,5,12,false)
-    updateWeights(output,11,0,24,5,12,false)
+    updateWeights(output,11,0,24,5,12)
     expect(input).toStrictEqual(output)
 })
 
@@ -206,10 +189,10 @@ test('calcNodeCosts-checkNonDiagonals-LeftClosed', () => {
         index:11
     }
     const openNodes: Node[] = getBlankNodeGrid(Math.pow(5,2))
-    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5, false)
-    updateWeights(output,7,0,24,5,12,false)
-    updateWeights(output,13,0,24,5,12,false)
-    updateWeights(output,17,0,24,5,12,false)
+    CalcNodeCosts(input, 12, closedNodes, openNodes, 0, 24, 5)
+    updateWeights(output,7,0,24,5,12)
+    updateWeights(output,13,0,24,5,12)
+    updateWeights(output,17,0,24,5,12)
     //updateWeights(output,11,0,24,5,12,false)
     expect(input).toStrictEqual(output)
 })

@@ -1,28 +1,18 @@
 import React, { useState, useRef, useEffect} from 'react';
 import { AStarSearch, Animation } from '../../algorithms/astar'
 import './grid.css'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../store';
 import { Dijkstra } from '../../algorithms/dijkstras';
 import { BestFirstSearch } from '../../algorithms/bestFirst';
 import { DepthFirstSearch } from '../../algorithms/depthFirst';
 import { BreadthFirstSearch } from '../../algorithms/breadthFirst';
-
-interface IGridInputProps{
-  startSearch(start:boolean):void,
-}
-
-interface requestDataI{
-  grid:boolean[],
-  width: number,
-  start: number,
-  finish:number
-}
+import { startSearch } from '../../Reducers/startSearch/startSearchActions';
 
 const rows = 18
 const columns = 63
 
-const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
+const Grid = () => {
   window.onmousedown = (e:MouseEvent) => {
     if(e.type === 'mousedown') mouseStatus.current = true
   }
@@ -113,7 +103,7 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
     }
   }
   const StartSearch = async () => {
-    startSearch(true)
+    dispatch(startSearch(true))
     CleanGrid()
     grid[finishNode] = false
     const request = {
@@ -137,18 +127,18 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
     const animations = await response.json() 
 
     const ne = document.getElementsByClassName('node') as HTMLCollectionOf<HTMLElement>
-    if(animations.length === 0) startSearch(false)
+    if(animations.length === 0) dispatch(startSearch(false))
     for(let i = 0; i < animations.length; i++){
       setTimeout(() => {
         ne[animations[i].index].className += animations[i].className
-        if(i === animations.length - 1) startSearch(false)
+        if(i === animations.length - 1) dispatch(startSearch(false))
       }, i * speed)
     }
     hasSolution.current = true
   }
   const StartSearchInstant = () => {
     var animations:Animation[] = []
-    if(algorithm === 'astar') animations = AStarSearch(grid,columns,startNode,finishNode,false)
+    if(algorithm === 'astar') animations = AStarSearch(grid,columns,startNode,finishNode)
     if(algorithm === 'dijkstra') animations = Dijkstra(grid, columns,startNode,finishNode)
     if(algorithm === 'best-first') animations = BestFirstSearch(grid, columns,startNode,finishNode)
     if(algorithm === 'depth-first') animations = DepthFirstSearch(grid, columns,startNode,finishNode)
@@ -178,6 +168,7 @@ const Grid:React.FC<IGridInputProps> = ({startSearch}) => {
   const[finishNode,setFinishNode] = useState(Math.floor(columns/2))
   const[nodeDimensions,setNodeDimensions] = useState(50)
   const prevFinish = useRef({index: finishNode, wasWall: false})
+  const dispatch = useDispatch()
 
   const mouseStatus = useRef(false)
   const startMoveStatus = useRef(false)

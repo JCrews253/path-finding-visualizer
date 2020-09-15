@@ -1,60 +1,45 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import './header.css'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootStore } from '../../store';
-import {boardCommands} from '../../Reducers/boardChange/boardChangeAction'
+import { boardCommand } from '../../Reducers/boardChange/boardChangeAction'
+import { changeAlgo } from '../../Reducers/algoSelect/algoSelectActions';
+import { startSearch } from '../../Reducers/startSearch/startSearchActions';
+import { gridTilt } from '../../Reducers/gridTilt/gridTiltActions';
+import { searchSpeed } from '../../Reducers/searchSpeed/searchSpeedActions';
 
-interface IHeaderInputProps{
-    changeAlgo(algo:string): void,
-    startSearch(start:boolean): void,
-    gridTilt(tilt:boolean): void,
-    searchSpeed(speed:number): void,
-    boardCommand(state:boolean, action:boardCommands): void
-}
 
-const Header: React.FC<IHeaderInputProps> = ({changeAlgo, startSearch, gridTilt,searchSpeed, boardCommand}) => {
+const Header = () => {
+
+    const dispatch = useDispatch()
+    
     const tilt = useSelector( (state:RootStore) => state.tiltState)
 
-    const onAlgoChange = () => {
-        const e = document.getElementById('algo-select') as HTMLSelectElement
-        const algoritm = e.options[e.selectedIndex].value
-        changeAlgo(algoritm)
-    }
+    const onAlgoChange = (event: ChangeEvent<HTMLSelectElement>) => dispatch(changeAlgo(event.target.value))
 
-    const onStartSearch = () => {
-        startSearch(true)
-    }
+    const onStartSearch = () => dispatch(startSearch(true))
 
-    const onGridTilt = () => {
-        gridTilt(tilt ? false : true)
-    }
+    const onGridTilt = () =>  dispatch(gridTilt((tilt ? false : true)))
 
-    const onSearchSpeed = () => {
-        const e = document.getElementById('speed-select') as HTMLSelectElement
-        const speed = e.options[e.selectedIndex].value
-        var speedValue = 10
-        if(speed === "FAST") speedValue = 10
-        if(speed === "MEDIUM") speedValue = 50
+    const onSearchSpeed = (event: ChangeEvent<HTMLSelectElement>) => {
+        const speed = event.target.value
+        var speedValue
         if(speed === "SLOW") speedValue = 100
-        searchSpeed(speedValue)
+        else if(speed === "MEDIUM") speedValue = 50
+        else speedValue = 10
+        dispatch(searchSpeed(speedValue))
     }
     
-    const HandleGitHubClick = () => {
-        window.open("https://github.com/JCrews253/path-finding-visualizer")
-    }
+    const HandleGitHubClick = () => window.open("https://github.com/JCrews253/path-finding-visualizer")
 
-    const HandleHomeClick = () => {
-        window.open("https://jcrews253.github.io/portfolio/#/projects",'_self')
-    }
-
-    const solving = useSelector((state: RootStore) => state.startSearch)
+    const HandleHomeClick = () => window.open("https://jcrews253.github.io/portfolio/#/projects",'_self')
 
     return(
         <div className='header'>
             <h1 className='title'>Retro 80's Path Finding Visualization</h1>
             <div className='label-element-container'>
                 <label className='algo-select-label' htmlFor='algo-select'>Choose an Algorithm:</label>
-                <select onChange={() => onAlgoChange()} id='algo-select'>
+                <select onChange={onAlgoChange} id='algo-select'>
                     <option value='astar'>A* Search</option>
                     <option value='dijkstra'>Dijkstra's Algorithm</option>
                     <option value='best-first'>Best First Search</option>
@@ -63,18 +48,18 @@ const Header: React.FC<IHeaderInputProps> = ({changeAlgo, startSearch, gridTilt,
                 </select>
             </div>
             <div className='buttons-container'>
-                <button className='animated-button' onClick={()=> HandleHomeClick()}>Home</button>
-                <button className='animated-button' onClick={()=> HandleGitHubClick()}>Github</button>
+                <button className='animated-button' onClick={HandleHomeClick}>Home</button>
+                <button className='animated-button' onClick={HandleGitHubClick}>Github</button>
                 <hr/>
-                <button className='animated-button' onClick={() => onStartSearch()}>Start</button>
-                <button className='animated-button'onClick={() => boardCommand(true,"CLEAR_PATH")}>Clear Path</button>
-                <button className='animated-button'onClick={() => boardCommand(true,"CLEAR_BOARD")}>Clear Board</button>
-                <button className='animated-button'onClick={() => boardCommand(true,"RANDOM_WALLS")}>Random Walls</button>
-                <button className='animated-button' onClick={() => onGridTilt()}>Toggle Tilt</button>
+                <button className='animated-button' onClick={onStartSearch}>Start</button>
+                <button className='animated-button'onClick={() => dispatch(boardCommand(true,"CLEAR_PATH"))}>Clear Path</button>
+                <button className='animated-button'onClick={() =>  dispatch(boardCommand(true,"CLEAR_BOARD"))}>Clear Board</button>
+                <button className='animated-button'onClick={() =>  dispatch(boardCommand(true,"RANDOM_WALLS"))}>Random Walls</button>
+                <button className='animated-button' onClick={onGridTilt}>Toggle Tilt</button>
             </div>
             <div className='label-element-container'>
                 <label className='speed-select-label' htmlFor='speed-select'>Choose Search Speed</label>
-                <select onChange={() => onSearchSpeed()} id='speed-select'>
+                <select onChange={onSearchSpeed} id='speed-select'>
                     <option value='FAST'>Fast</option>
                     <option value='MEDIUM'>Medium</option>
                     <option value='SLOW'>Slow</option>

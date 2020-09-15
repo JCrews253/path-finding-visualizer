@@ -16,7 +16,7 @@ export interface Animation{
 
 var animationQueue: Animation[] = []
 
-export const AStarSearch = (grid: boolean[], width: number, start:number, finish: number, allowDiagonals: boolean):Animation[] => {
+export const AStarSearch = (grid: boolean[], width: number, start:number, finish: number):Animation[] => {
     animationQueue = []
     const openNodes: Node[] = []
     const closedNodes:Node[] = []
@@ -37,7 +37,7 @@ export const AStarSearch = (grid: boolean[], width: number, start:number, finish
         ListRemove(openNodes,currentNode.index)
         closedNodes.push(currentNode)
         if(currentNode.index === finish) break;
-        CalcNodeCosts(nodeGrid, currentNode.index, closedNodes, openNodes, start, finish, width, allowDiagonals)
+        CalcNodeCosts(nodeGrid, currentNode.index, closedNodes, openNodes, start, finish, width)
     }
 
     var parent = nodeGrid[finish].parent
@@ -63,7 +63,7 @@ export const BuildNodeGrid = (grid: boolean[]):Node[] => {
     const buildNodeGrid:Node[] = []
     grid.map( (_,idx) => {
         buildNodeGrid[idx] = {
-            isWall: (grid[idx] === true) ? true : false,
+            isWall: grid[idx],
             gWeight: Infinity,
             hWeight: Infinity,
             fWeight: Infinity,
@@ -72,18 +72,6 @@ export const BuildNodeGrid = (grid: boolean[]):Node[] => {
         }
     })
    return buildNodeGrid
-}
-
-export const EuclideanDistance = (p:number, q:number, width: number):number => {
-    const pRow = Math.floor(p/width)
-    var pCol
-    if(p >= width) pCol = p % width
-    else pCol = p
-    const qRow = Math.floor(q/width)
-    var qCol
-    if(q >= width) qCol = q % width
-    else qCol = q
-    return Math.floor(Math.sqrt(Math.pow(qRow - pRow,2) + Math.pow(qCol - pCol,2))*10)  
 }
 
 export const ManhattanDistance = (p:number, q:number, width: number):number => {
@@ -128,7 +116,7 @@ export const ListRemove = (nodeList: Node[], gridIndex:number) => {
     }
 }
 
-export const CalcNodeCosts = (nodeGrid:Node[], nodeIndex:number, closedNodes:Node[],openNodes:Node[],start:number,finish:number, width:number, allowDiagonals:boolean) => {
+export const CalcNodeCosts = (nodeGrid:Node[], nodeIndex:number, closedNodes:Node[],openNodes:Node[],start:number,finish:number, width:number) => {
     const UpdateWeightCost = (index:number,parentIndex:number) => {
         if(!nodeGrid[index].isWall && !ListContains(closedNodes,index)){
             if(index !== finish){
@@ -138,8 +126,8 @@ export const CalcNodeCosts = (nodeGrid:Node[], nodeIndex:number, closedNodes:Nod
                 })
             }
             const tempNode:Node = { ...nodeGrid[index],
-                gWeight: nodeGrid[parentIndex].gWeight + (allowDiagonals ? EuclideanDistance(index,parentIndex,width) : ManhattanDistance(index,parentIndex,width)),
-                hWeight: allowDiagonals ? EuclideanDistance(index,finish,width) : ManhattanDistance(index, finish, width),
+                gWeight: nodeGrid[parentIndex].gWeight + ManhattanDistance(index,parentIndex,width),
+                hWeight: ManhattanDistance(index, finish, width),
                 get fWeight (){
                     return this.gWeight + this.hWeight
                 },
@@ -160,32 +148,16 @@ export const CalcNodeCosts = (nodeGrid:Node[], nodeIndex:number, closedNodes:Nod
     if(nodeIndex >= width){
         UpdateWeightCost(nodeIndex-width,nodeIndex)
     }
-    //Top-Right
-    if(nodeIndex >= width && nodeIndex % width !== width-1 && allowDiagonals){
-       UpdateWeightCost(nodeIndex-width+1,nodeIndex)
-    }
     //Right
     if(nodeIndex % width !== width-1){
        UpdateWeightCost(nodeIndex+1,nodeIndex)
-    }
-    //Bottom-Right
-    if(nodeIndex % width !== width-1 && nodeIndex < nodeGrid.length - width && allowDiagonals){
-       UpdateWeightCost(nodeIndex+width+1,nodeIndex)
     }
     //Bottom
     if(nodeIndex < nodeGrid.length - width){
        UpdateWeightCost(nodeIndex+width,nodeIndex)
     }
-    //Bottom-Left
-    if(nodeIndex < nodeGrid.length - width && nodeIndex % width !== 0 && allowDiagonals){
-       UpdateWeightCost(nodeIndex+width-1,nodeIndex)
-    }
     //Left
     if(nodeIndex % width !== 0){
        UpdateWeightCost(nodeIndex-1,nodeIndex)
-    }
-    //Top-Left
-    if(nodeIndex % width !== 0 && nodeIndex >= width && allowDiagonals){
-       UpdateWeightCost(nodeIndex-width-1,nodeIndex)
     }
 }
