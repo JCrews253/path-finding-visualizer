@@ -13,9 +13,11 @@ const rows = 18
 const columns = 63
 
 const Grid = () => {
+
   window.onmousedown = (e:MouseEvent) => {
     if(e.type === 'mousedown') mouseStatus.current = true
   }
+
   window.onmouseup = (e:MouseEvent) => {
     if(e.type === 'mouseup') {
       mouseStatus.current = false
@@ -46,6 +48,7 @@ const Grid = () => {
       }
       setGrid(newGrid)
   }
+
   const HandleMouseDown = (index:number) => {
     if(!solving){
       if(index === startNode) startMoveStatus.current = true
@@ -58,11 +61,10 @@ const Grid = () => {
       }
     }
   }
+
   const HandleMouseEnter = (index:number) => {
     if(!solving){
-      if(startMoveStatus.current){
-        setStartNode(index)
-      }
+      if(startMoveStatus.current) setStartNode(index)
       else if(finishMoveStatus.current){
         const newGrid = [...grid]
         newGrid[prevFinish.current.index] = prevFinish.current.wasWall
@@ -82,6 +84,7 @@ const Grid = () => {
       }
     }
   }
+
   const GetBlankGrid = (wallPercent:number):boolean[] => {
     let array:boolean[] = []
     for(let i = 0; i < rows*columns; i++){
@@ -148,21 +151,8 @@ const Grid = () => {
       ne[animations[i].index].className += animations[i].className+"Instant"
     }
   }
-  const EstablishServerConnection = async() => {
-    const response = await fetch(`https://path-finding-visualizer.herokuapp.com/status`,{
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers':'*'
-      }})
-    serverStatus.current = true
-    console.log('server connection')
-  }
 
   
-  const serverStatus = useRef(false)
   const[grid,setGrid] = useState( () => GetBlankGrid(0))
   const[startNode,setStartNode] = useState((rows*columns-1)-Math.floor(columns/2))
   const[finishNode,setFinishNode] = useState(Math.floor(columns/2))
@@ -181,10 +171,6 @@ const Grid = () => {
   const speed = useSelector((state:RootStore) => state.searchSpeed)
   const boardChange = useSelector((state:RootStore) => state.boardChange)
 
-  //grid[startNode] = false
-  //grid[finishNode] = false
-
-  if(serverStatus.current === false) EstablishServerConnection()
 
   useEffect( () => {
     if(tiltState){

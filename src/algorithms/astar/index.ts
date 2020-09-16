@@ -55,7 +55,6 @@ export const AStarSearch = (grid: boolean[], width: number, start:number, finish
         console.log('No Path Found')
     }
 
-
     return animationQueue
 }
 
@@ -143,21 +142,12 @@ export const CalcNodeCosts = (nodeGrid:Node[], nodeIndex:number, closedNodes:Nod
             }
         }
     }
-
     //Top
-    if(nodeIndex >= width){
-        UpdateWeightCost(nodeIndex-width,nodeIndex)
-    }
+    if(nodeIndex >= width) UpdateWeightCost(nodeIndex-width,nodeIndex)
     //Right
-    if(nodeIndex % width !== width-1){
-       UpdateWeightCost(nodeIndex+1,nodeIndex)
-    }
+    if(nodeIndex % width !== width-1) UpdateWeightCost(nodeIndex+1,nodeIndex)
     //Bottom
-    if(nodeIndex < nodeGrid.length - width){
-       UpdateWeightCost(nodeIndex+width,nodeIndex)
-    }
+    if(nodeIndex < nodeGrid.length - width) UpdateWeightCost(nodeIndex+width,nodeIndex)
     //Left
-    if(nodeIndex % width !== 0){
-       UpdateWeightCost(nodeIndex-1,nodeIndex)
-    }
+    if(nodeIndex % width !== 0) UpdateWeightCost(nodeIndex-1,nodeIndex)
 }
