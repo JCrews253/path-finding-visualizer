@@ -1,4 +1,4 @@
-import { boardCommandDispatchTypes, clearBoardAction, clearPathAction, randomWallsAction } from './boardChangeAction'
+import { boardCommandDispatchTypes } from './boardChangeAction'
 
 interface IDefaultState{
     clearBoard: boolean,
