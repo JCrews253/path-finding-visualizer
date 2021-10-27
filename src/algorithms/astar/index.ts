@@ -60,7 +60,7 @@ export const AStarSearch = (grid: boolean[], width: number, start:number, finish
 
 export const BuildNodeGrid = (grid: boolean[]):Node[] => {
     const buildNodeGrid:Node[] = []
-    grid.map( (_,idx) => {
+    grid.forEach( (_,idx) => {
         buildNodeGrid[idx] = {
             isWall: grid[idx],
             gWeight: Infinity,
@@ -87,7 +87,7 @@ export const ManhattanDistance = (p:number, q:number, width: number):number => {
 
 export const FindSmallestCost = (array:Node[]):number => {
     let smallestIndex = 0
-    array.map( (_,idx) => {
+    array.forEach( (_,idx) => {
         if(array[idx].fWeight < array[smallestIndex].fWeight){
             smallestIndex = idx
         }
