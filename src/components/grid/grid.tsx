@@ -186,7 +186,7 @@ const Grid = () => {
 
   useEffect( () => {
     if(solving) StartSearch()
-  },[solving])
+  },[solving, StartSearch, StartSearchInstant, HideHiddenWalls])
 
   useEffect( () => {
     if(hasSolution.current){
