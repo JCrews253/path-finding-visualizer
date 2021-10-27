@@ -33,7 +33,7 @@ const Header = () => {
     window.open("https://github.com/JCrews253/path-finding-visualizer");
 
   const HandleHomeClick = () =>
-    window.open("https://jcrews253.github.io/portfolio/#/projects", "_self");
+    window.open("https://jamesrcrews.com", "_self");
 
   return (
     <div className="header">
