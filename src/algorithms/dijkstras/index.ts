@@ -52,7 +52,7 @@ export const Dijkstra = (grid:boolean[],width:number,start:number,finish:number)
 
 export const FindMinNode = (nodeGrid:Node[], sptSet:boolean[],finish:number):number => {
     let smallestIndex = finish
-    nodeGrid.map( (_,idx) => {
+    nodeGrid.forEach( (_,idx) => {
         if(nodeGrid[idx].distance < nodeGrid[smallestIndex].distance && !sptSet[idx]){
             smallestIndex = idx
         }
