@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { AStarSearch, Animation } from "../../algorithms/astar";
 import "./grid.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,34 +13,6 @@ const rows = 18;
 const columns = 63;
 
 const Grid = () => {
-  const GetBlankGrid = (wallPercent: number): boolean[] => {
-    let array: boolean[] = [];
-    for (let i = 0; i < rows * columns; i++) {
-      array[i] = Math.random() >= 1 - wallPercent / 100;
-    }
-    return array;
-  };
-
-  const [grid, setGrid] = useState(() => GetBlankGrid(0));
-  const [startNode, setStartNode] = useState(
-    rows * columns - 1 - Math.floor(columns / 2)
-  );
-  const [finishNode, setFinishNode] = useState(Math.floor(columns / 2));
-  const [nodeDimensions, setNodeDimensions] = useState(50);
-  const prevFinish = useRef({ index: finishNode, wasWall: false });
-  const dispatch = useDispatch();
-
-  const mouseStatus = useRef(false);
-  const startMoveStatus = useRef(false);
-  const finishMoveStatus = useRef(false);
-  const mouseIndex = useRef(-1);
-  const hasSolution = useRef(false);
-  const algorithm = useSelector((state: RootStore) => state.algoSelect);
-  const solving = useSelector((state: RootStore) => state.startSearch);
-  const tiltState = useSelector((state: RootStore) => state.tiltState);
-  const speed = useSelector((state: RootStore) => state.searchSpeed);
-  const boardChange = useSelector((state: RootStore) => state.boardChange);
-
   window.onmousedown = (e: MouseEvent) => {
     if (e.type === "mousedown") mouseStatus.current = true;
   };
@@ -60,28 +32,25 @@ const Grid = () => {
       setNodeDimensions(nodeWidth);
     }
   };
-  const HideHiddenWalls = useCallback(
-    (wallPercent: number) => {
-      const ne = document.getElementsByClassName(
-        "node"
-      ) as HTMLCollectionOf<HTMLElement>;
-      const newGrid = [...grid];
-      for (let i = 0; i < ne.length; i++) {
-        const location = ne[i].getBoundingClientRect();
-        if (
-          location.x + location.width / 2 < 0 ||
-          location.x > window.innerWidth - 50 ||
-          location.y > window.innerHeight
-        ) {
-          newGrid[i] = true;
-        } else {
-          newGrid[i] = Math.random() >= 1 - wallPercent / 100;
-        }
+  const HideHiddenWalls = (wallPercent: number) => {
+    const ne = document.getElementsByClassName(
+      "node"
+    ) as HTMLCollectionOf<HTMLElement>;
+    const newGrid = [...grid];
+    for (let i = 0; i < ne.length; i++) {
+      const location = ne[i].getBoundingClientRect();
+      if (
+        location.x + location.width / 2 < 0 ||
+        location.x > window.innerWidth - 50 ||
+        location.y > window.innerHeight
+      ) {
+        newGrid[i] = true;
+      } else {
+        newGrid[i] = Math.random() >= 1 - wallPercent / 100;
       }
-      setGrid(newGrid);
-    },
-    [grid]
-  );
+    }
+    setGrid(newGrid);
+  };
 
   const HandleMouseDown = (index: number) => {
     if (!solving) {
@@ -118,6 +87,13 @@ const Grid = () => {
     }
   };
 
+  const GetBlankGrid = (wallPercent: number): boolean[] => {
+    let array: boolean[] = [];
+    for (let i = 0; i < rows * columns; i++) {
+      array[i] = Math.random() >= 1 - wallPercent / 100;
+    }
+    return array;
+  };
   const CleanGrid = () => {
     const ne = document.getElementsByClassName(
       "node"
@@ -133,7 +109,7 @@ const Grid = () => {
       ne[i].className = tempClassNames.join(" ");
     }
   };
-  const StartSearch = useCallback(async () => {
+  const StartSearch = async () => {
     dispatch(startSearch(true));
     CleanGrid();
     grid[finishNode] = false;
@@ -171,9 +147,8 @@ const Grid = () => {
       }, i * speed);
     }
     hasSolution.current = true;
-  }, [algorithm, dispatch, finishNode, grid, speed, startNode]);
-
-  const StartSearchInstant = useCallback(() => {
+  };
+  const StartSearchInstant = () => {
     var animations: Animation[] = [];
     if (algorithm === "astar")
       animations = AStarSearch(grid, columns, startNode, finishNode);
@@ -191,7 +166,27 @@ const Grid = () => {
     for (let i = 0; i < animations.length; i++) {
       ne[animations[i].index].className += animations[i].className + "Instant";
     }
-  }, [algorithm, finishNode, grid, startNode]);
+  };
+
+  const [grid, setGrid] = useState(() => GetBlankGrid(0));
+  const [startNode, setStartNode] = useState(
+    rows * columns - 1 - Math.floor(columns / 2)
+  );
+  const [finishNode, setFinishNode] = useState(Math.floor(columns / 2));
+  const [nodeDimensions, setNodeDimensions] = useState(50);
+  const prevFinish = useRef({ index: finishNode, wasWall: false });
+  const dispatch = useDispatch();
+
+  const mouseStatus = useRef(false);
+  const startMoveStatus = useRef(false);
+  const finishMoveStatus = useRef(false);
+  const mouseIndex = useRef(-1);
+  const hasSolution = useRef(false);
+  const algorithm = useSelector((state: RootStore) => state.algoSelect);
+  const solving = useSelector((state: RootStore) => state.startSearch);
+  const tiltState = useSelector((state: RootStore) => state.tiltState);
+  const speed = useSelector((state: RootStore) => state.searchSpeed);
+  const boardChange = useSelector((state: RootStore) => state.boardChange);
 
   useEffect(() => {
     if (tiltState) {
@@ -206,14 +201,14 @@ const Grid = () => {
 
   useEffect(() => {
     if (solving) StartSearch();
-  }, [solving, StartSearch]);
+  }, [solving]);
 
   useEffect(() => {
     if (hasSolution.current) {
       CleanGrid();
       StartSearchInstant();
     }
-  }, [startNode, finishNode, StartSearchInstant]);
+  }, [startNode, finishNode]);
 
   useEffect(() => {
     if (boardChange.clearBoard) {
@@ -226,7 +221,7 @@ const Grid = () => {
       CleanGrid();
       HideHiddenWalls(30);
     }
-  }, [boardChange, HideHiddenWalls]);
+  }, [boardChange]);
 
   return (
     <div className="grid-container">

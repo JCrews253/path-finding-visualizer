@@ -32,8 +32,7 @@ const Header = () => {
   const HandleGitHubClick = () =>
     window.open("https://github.com/JCrews253/path-finding-visualizer");
 
-  const HandleHomeClick = () =>
-    window.open("https://jamesrcrews.com", "_self");
+  const HandleHomeClick = () => window.open("https://jamesrcrews.com", "_self");
 
   return (
     <div className="header">
