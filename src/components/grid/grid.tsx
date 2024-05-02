@@ -9,7 +9,7 @@ import { DepthFirstSearch } from "../../algorithms/depthFirst";
 import { BreadthFirstSearch } from "../../algorithms/breadthFirst";
 import { startSearch } from "../../Reducers/startSearch/startSearchActions";
 
-const rows = 18;
+const rows = 15;
 const columns = 63;
 
 const Grid = () => {
