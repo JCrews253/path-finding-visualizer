@@ -180,7 +180,7 @@ const Grid = () => {
   useEffect(() => {
     if (tiltState) {
       setNodeDimensions(50);
-      setStartNode(rows * columns - 1 - Math.floor(columns / 2));
+      setStartNode(Math.floor(rows / 2) * columns - 1 - Math.floor(columns / 2));
       setFinishNode(Math.floor(columns / 2));
     } else {
       const nodeWidth = (window.innerWidth - 200) / columns;
