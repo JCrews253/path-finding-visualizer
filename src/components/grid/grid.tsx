@@ -190,14 +190,16 @@ const Grid = () => {
 
   useEffect(() => {
     if (solving) StartSearch();
-  }, [solving, StartSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [solving]);
 
   useEffect(() => {
     if (hasSolution.current) {
       CleanGrid();
       StartSearchInstant();
     }
-  }, [startNode, finishNode, StartSearchInstant]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startNode, finishNode]);
 
   useEffect(() => {
     if (boardChange.clearBoard) {
@@ -210,7 +212,8 @@ const Grid = () => {
       CleanGrid();
       HideHiddenWalls(30);
     }
-  }, [boardChange, HideHiddenWalls]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardChange]);
 
   return (
     <div className="grid-container">
