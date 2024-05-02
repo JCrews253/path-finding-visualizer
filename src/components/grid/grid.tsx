@@ -159,7 +159,7 @@ const Grid = () => {
 
   const [grid, setGrid] = useState(() => GetBlankGrid(0));
   const [startNode, setStartNode] = useState(
-    rows * columns - 1 - Math.floor(columns / 2)
+    Math.floor(rows / 2) * columns - 1 - Math.floor(columns / 2)
   );
   const [finishNode, setFinishNode] = useState(Math.floor(columns / 2));
   const [nodeDimensions, setNodeDimensions] = useState(35);
