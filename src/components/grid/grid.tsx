@@ -159,7 +159,7 @@ const Grid = () => {
 
   const [grid, setGrid] = useState(() => GetBlankGrid(0));
   const [startNode, setStartNode] = useState(
-    Math.floor(rows / 2) * columns - 1 - Math.floor(columns / 2)
+    Math.floor(rows * .75) * columns - 1 - Math.floor(columns / 2)
   );
   const [finishNode, setFinishNode] = useState(Math.floor(columns / 2));
   const [nodeDimensions, setNodeDimensions] = useState(35);
@@ -180,7 +180,7 @@ const Grid = () => {
   useEffect(() => {
     if (tiltState) {
       setNodeDimensions(50);
-      setStartNode(Math.floor(rows / 2) * columns - 1 - Math.floor(columns / 2));
+      setStartNode(Math.floor(rows * .75) * columns - 1 - Math.floor(columns / 2));
       setFinishNode(Math.floor(columns / 2));
     } else {
       const nodeWidth = (window.innerWidth - 200) / columns;
