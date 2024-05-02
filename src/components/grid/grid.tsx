@@ -9,7 +9,7 @@ import { DepthFirstSearch } from "../../algorithms/depthFirst";
 import { BreadthFirstSearch } from "../../algorithms/breadthFirst";
 import { startSearch } from "../../Reducers/startSearch/startSearchActions";
 
-const rows = 15;
+const rows = 18;
 const columns = 63;
 
 const Grid = () => {
@@ -162,7 +162,7 @@ const Grid = () => {
     rows * columns - 1 - Math.floor(columns / 2)
   );
   const [finishNode, setFinishNode] = useState(Math.floor(columns / 2));
-  const [nodeDimensions, setNodeDimensions] = useState(50);
+  const [nodeDimensions, setNodeDimensions] = useState(35);
   const prevFinish = useRef({ index: finishNode, wasWall: false });
   const dispatch = useDispatch();
 
