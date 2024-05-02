@@ -113,7 +113,7 @@ const Grid = () => {
     dispatch(startSearch(true));
     CleanGrid();
     grid[finishNode] = false;
-    let animations
+    let animations: Animation[] = [];
     if (algorithm === "astar")
       animations = AStarSearch(grid, columns, startNode, finishNode);
     if (algorithm === "dijkstra")
