@@ -113,28 +113,17 @@ const Grid = () => {
     dispatch(startSearch(true));
     CleanGrid();
     grid[finishNode] = false;
-    const request = {
-      algorithm: algorithm,
-      grid: grid,
-      width: columns,
-      start: startNode,
-      finish: finishNode,
-    };
-
-    const response = await fetch(
-      `https://path-finding-visualizer.herokuapp.com/solutions`,
-      {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "*",
-        },
-        body: JSON.stringify(request), // body data type must match "Content-Type" header
-      }
-    );
-    const animations = await response.json();
+    let animations
+    if (algorithm === "astar")
+      animations = AStarSearch(grid, columns, startNode, finishNode);
+    if (algorithm === "dijkstra")
+      animations = Dijkstra(grid, columns, startNode, finishNode);
+    if (algorithm === "best-first")
+      animations = BestFirstSearch(grid, columns, startNode, finishNode);
+    if (algorithm === "depth-first")
+      animations = DepthFirstSearch(grid, columns, startNode, finishNode);
+    if (algorithm === "breadth-first")
+      animations = BreadthFirstSearch(grid, columns, startNode, finishNode);
 
     const ne = document.getElementsByClassName(
       "node"
