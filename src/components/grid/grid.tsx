@@ -190,14 +190,14 @@ const Grid = () => {
 
   useEffect(() => {
     if (solving) StartSearch();
-  }, [solving]);
+  }, [solving, StartSearch]);
 
   useEffect(() => {
     if (hasSolution.current) {
       CleanGrid();
       StartSearchInstant();
     }
-  }, [startNode, finishNode]);
+  }, [startNode, finishNode, StartSearchInstant]);
 
   useEffect(() => {
     if (boardChange.clearBoard) {
@@ -210,7 +210,7 @@ const Grid = () => {
       CleanGrid();
       HideHiddenWalls(30);
     }
-  }, [boardChange]);
+  }, [boardChange, HideHiddenWalls]);
 
   return (
     <div className="grid-container">
